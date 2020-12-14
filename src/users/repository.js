@@ -1,4 +1,4 @@
-const postgreSqlDb = require('../postgreSqlDb');
+const postgreSqlDb = require('../postgreDb');
 const {usersErrorName} = require('./errors');
 const logger = require('../logger');
 const usersSqlQueries = require('./sql-queries');

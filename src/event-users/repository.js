@@ -1,5 +1,5 @@
 const {eventUsersErrorName} = require('./errors');
-const postgreSqlDb = require('../postgreSqlDb');
+const postgreSqlDb = require('../postgreDb');
 const queries = {};
 const logger = require('../logger');
 const mainSqlQueries = require('../main-sql-queries');
