@@ -104,5 +104,7 @@ dist
 .tern-port
 
 .idea
+
 split_billing.iml
-config.js*
+
+*config.js*
