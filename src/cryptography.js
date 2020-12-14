@@ -1,9 +1,6 @@
 const CryptoJS = require('crypto-js');
 const crypto = require('crypto');
-
-const pepperKey = "UR`aSekN-h9[:-vGa)!;2m_jWKC}cA'2>/Ege==kCY.!?tC5dB--b(cVEW}&sxB#/";
-const pepper = "91cbbe92c0f0f01f1f0f0ab051d5659cd6d6deb2d98f6d080a125f0585"
-    + "bcb60b8c37a91fdf0a511165a2698f85e7f886d8f914dec42eb3ed73a1dd4486fd59f1";
+const {devConfig} = require('../config');
 
 const cryptography = {};
 
@@ -20,11 +17,12 @@ cryptography.produceSalt = function (password) {
 };
 
 cryptography.encrypt = function (password, salt) {
-  return CryptoJS.AES.encrypt(password, salt + pepper);
+  return CryptoJS.AES.encrypt(password, salt + devConfig.cryptography.pepper);
 };
 
 cryptography.decrypt = function decrypt(hashedPassword, salt) {
-  return CryptoJS.AES.decrypt(hashedPassword, salt + pepper).toString(
+  return CryptoJS.AES.decrypt(hashedPassword,
+      salt + devConfig.cryptography.pepper).toString(
       CryptoJS.enc.Utf8);
 };
 

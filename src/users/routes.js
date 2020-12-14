@@ -1,21 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
+const {devConfig} = require('../../config');
 const queryString = require('query-string');
 const axios = require('axios');
 
-const clientId = '250133767697-uu60qfptgt2u9cnnnpbgu76s1f9gilnp.apps.googleusercontent.com';
-const clientSecret = 'OIE5HAM1H7ZS9EtTRtql9CXa';
-const redirectUri = 'http://127.0.0.1:4000/auth/google';
-const scope = [
-  'https://www.googleapis.com/auth/userinfo.email',
-  'https://www.googleapis.com/auth/userinfo.profile',
-];
-
 const stringifiedParams = queryString.stringify({
-  client_id: clientId,
-  redirect_uri: redirectUri,
-  scope: scope.join(' '), // space seperated string
+  client_id: devConfig.googleAuth.clientId,
+  redirect_uri: devConfig.googleAuth.redirectUri,
+  scope: devConfig.googleAuth.scope.join(' '), // space seperated string
   response_type: 'code',
   access_type: 'offline',
   prompt: 'consent',
@@ -39,9 +31,9 @@ async function getAccessTokenFromCode(code) {
     url: `https://oauth2.googleapis.com/token`,
     method: 'post',
     data: {
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uri: redirectUri,
+      client_id: devConfig.googleAuth.clientId,
+      client_secret: devConfig.googleAuth.clientSecret,
+      redirect_uri: devConfig.googleAuth.redirectUri,
       grant_type: 'authorization_code',
       code,
     },
