@@ -4,15 +4,12 @@ const {devConfig} = require('../config');
 
 const cryptography = {};
 
-const saltLength = 32;
-const saltGenerationIteration = 1000;
-const saltKeyBitsSize = 512;
-
 cryptography.produceSalt = function (password) {
-  let salt = crypto.randomBytes(Math.ceil(saltLength)).toString('hex');
+  let salt = crypto.randomBytes(
+      Math.ceil(devConfig.cryptography.saltLength)).toString('hex');
   return CryptoJS.PBKDF2(password, salt, {
-    keySize: saltKeyBitsSize / 32,
-    iterations: saltGenerationIteration
+    keySize: devConfig.cryptography.saltKeyBitsSize / 32,
+    iterations: devConfig.cryptography.saltGenerationIteration
   });
 };
 
@@ -22,8 +19,7 @@ cryptography.encrypt = function (password, salt) {
 
 cryptography.decrypt = function decrypt(hashedPassword, salt) {
   return CryptoJS.AES.decrypt(hashedPassword,
-      salt + devConfig.cryptography.pepper).toString(
-      CryptoJS.enc.Utf8);
+      salt + devConfig.cryptography.pepper).toString(CryptoJS.enc.Utf8);
 };
 
 module.exports = cryptography;
