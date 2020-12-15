@@ -4,10 +4,10 @@ const {devConfig} = require('../../config');
 const queryString = require('query-string');
 const axios = require('axios');
 
-const stringifiedParams = queryString.stringify({
+const oauthParams = queryString.stringify({
   client_id: devConfig.googleAuth.clientId,
   redirect_uri: devConfig.googleAuth.redirectUri,
-  scope: devConfig.googleAuth.scope.join(' '), // space seperated string
+  scope: devConfig.googleAuth.scope.join(' '),
   response_type: 'code',
   access_type: 'offline',
   prompt: 'consent',
@@ -15,7 +15,7 @@ const stringifiedParams = queryString.stringify({
 
 router.get('/', async function (req, res, next) {
   const link = '<a href='
-      + `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
+      + `https://accounts.google.com/o/oauth2/v2/auth?${oauthParams}`
       + "> Login with Google</a>";
   res.send(link);
 });
@@ -28,7 +28,7 @@ router.get('/google', async function (req, res, next) {
 
 async function getAccessTokenFromCode(code) {
   const {data} = await axios({
-    url: `https://oauth2.googleapis.com/token`,
+    url: devConfig.googleAuth.tokenUri,
     method: 'post',
     data: {
       client_id: devConfig.googleAuth.clientId,
@@ -43,7 +43,7 @@ async function getAccessTokenFromCode(code) {
 
 async function getGoogleUserInfo(access_token) {
   const {data} = await axios({
-    url: 'https://www.googleapis.com/oauth2/v2/userinfo',
+    url: devConfig.googleAuth.userInfoUri,
     method: 'get',
     headers: {
       Authorization: `Bearer ${access_token}`,
