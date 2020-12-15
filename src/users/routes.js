@@ -1,8 +1,9 @@
 const express = require('express');
+
 const router = express.Router();
-const {devConfig} = require('../../config');
 const queryString = require('query-string');
 const axios = require('axios');
+const { devConfig } = require('../../config');
 
 const oauthParams = queryString.stringify({
   client_id: devConfig.googleAuth.clientId,
@@ -13,21 +14,15 @@ const oauthParams = queryString.stringify({
   prompt: 'consent',
 });
 
-router.get('/', async function (req, res, next) {
+router.get('/', async (req, res) => {
   const link = '<a href='
       + `https://accounts.google.com/o/oauth2/v2/auth?${oauthParams}`
-      + "> Login with Google</a>";
+      + '> Login with Google</a>';
   res.send(link);
 });
 
-router.get('/google', async function (req, res, next) {
-  const access_token = await getAccessTokenFromCode(req.param('code'));
-  const userInfo = await getGoogleUserInfo(access_token);
-  res.send(userInfo);
-});
-
 async function getAccessTokenFromCode(code) {
-  const {data} = await axios({
+  const { data } = await axios({
     url: devConfig.googleAuth.tokenUri,
     method: 'post',
     data: {
@@ -41,15 +36,21 @@ async function getAccessTokenFromCode(code) {
   return data.access_token;
 }
 
-async function getGoogleUserInfo(access_token) {
-  const {data} = await axios({
+async function getGoogleUserInfo(accessToken) {
+  const { data } = await axios({
     url: devConfig.googleAuth.userInfoUri,
     method: 'get',
     headers: {
-      Authorization: `Bearer ${access_token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
   return data;
 }
+
+router.get('/google', async (req, res) => {
+  const accessToken = await getAccessTokenFromCode(req.param('code'));
+  const userInfo = await getGoogleUserInfo(accessToken);
+  res.send(userInfo);
+});
 
 module.exports = router;

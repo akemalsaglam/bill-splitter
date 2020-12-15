@@ -1,5 +1,5 @@
 const queries = {};
-const {devConfig} = require('../../config');
+const { devConfig } = require('../../config');
 
 queries.updateUserQuery = `UPDATE ${devConfig.database.schemaName}.users SET name = COALESCE($1, name), 
 surname = COALESCE($2, surname), profile_photo_link = COALESCE($3, profile_photo_link) WHERE id=$4;`;

@@ -56,7 +56,7 @@ const root = {
   updateUser: userService.updateUser,
   activateUserById: userService.activateUserById,
   register: userService.register,
-  login: userService.login
+  login: userService.login,
 };
 
 module.exports.model = model;

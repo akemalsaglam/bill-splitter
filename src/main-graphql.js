@@ -1,5 +1,5 @@
 const expressGraphql = require('express-graphql');
-const {buildSchema} = require('graphql');
+const { buildSchema } = require('graphql');
 
 const userGraphql = require('./users/graphql-schema');
 const eventGraphql = require('./events/graphql-schema');

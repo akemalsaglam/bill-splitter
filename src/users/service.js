@@ -1,10 +1,11 @@
+const emailValidator = require('email-validator');
 const userRepository = require('./repository');
 
-const {usersErrorName} = require('./errors');
-const emailValidator = require("email-validator");
+const { usersErrorName } = require('./errors');
+
 const userService = {};
 
-const cryptography = require("../cryptography");
+const cryptography = require('../cryptography');
 
 userService.getAll = function () {
   return userRepository.getAll();
@@ -28,7 +29,7 @@ userService.activateUserById = function (args) {
 
 userService.register = async function (args) {
   const registerInput = args.input;
-  let isMailAddressValid = emailValidator.validate(registerInput.email_address);
+  const isMailAddressValid = emailValidator.validate(registerInput.email_address);
 
   if (!isMailAddressValid) {
     return new Error(usersErrorName.emailIsNotValid);
@@ -42,7 +43,7 @@ userService.register = async function (args) {
     return new Error(usersErrorName.passwordNotEqualToRepeatPassword);
   }
 
-  let user = await userRepository.getByEmail(registerInput.email_address);
+  const user = await userRepository.getByEmail(registerInput.email_address);
   if (user != null) {
     return new Error(usersErrorName.emailAlreadyInUse);
   }
@@ -60,7 +61,7 @@ userService.register = async function (args) {
 
 userService.login = async function (args) {
   const loginInput = args.input;
-  let user = await userRepository.getByEmail(loginInput.email_address);
+  const user = await userRepository.getByEmail(loginInput.email_address);
   if (user == null) {
     return false;
   }
