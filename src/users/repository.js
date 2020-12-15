@@ -1,5 +1,4 @@
 const postgreSqlDb = require('../postgreDb');
-const { usersErrorName } = require('./errors');
 const logger = require('../logger');
 const usersSqlQueries = require('./sql-queries');
 const mainSqlQueries = require('../main-sql-queries');
@@ -20,14 +19,7 @@ userRepository.getAll = async function getAll() {
 
 userRepository.getById = async function getById(id) {
   return postgreSqlDb.oneOrNone(mainSqlQueries.getByIdQuery(userTableName), id)
-    .then((data) => {
-      if (data === null) {
-        logger.warn(`user is not found for id:${id}`);
-        return new Error(usersErrorName.userNotFound);
-      }
-      logger.info(`getting user by id: ${id}`);
-      return data;
-    })
+    .then((data) => data)
     .catch(
       (error) => logger.error(
         `exception occurred while users getById, id: ${id}`,
@@ -55,6 +47,7 @@ userRepository.deleteById = function deleteById(id) {
     })
     .catch((error) => {
       logger.error(`exception occurred while users deleteById, id: ${id}`, error);
+      return false;
     });
 };
 
@@ -67,28 +60,15 @@ userRepository.activateUserById = function activateUserById(id) {
     .catch((error) => {
       logger.error(`exception occurred while users activateUserById, id: ${id}`,
         error);
+      return false;
     });
 };
 
-async function isUserActive(id) {
-  const user = await userRepository.getById(id);
-  return (user.is_active === true);
-}
-
-async function isUserPassive(id) {
-  return !await isUserActive(id);
-}
-
 userRepository.updateUser = async function updateUser(input) {
-  if (await isUserPassive(input.id)) {
-    return new Error(usersErrorName.userIsPassive);
-  }
-
   return postgreSqlDb.none(usersSqlQueries.updateUserQuery,
     [input.name, input.surname, input.profile_photo_link, input.id])
     .then(() => {
       logger.info(`user id: ${input.id} was updated.`);
-      return userRepository.getById(input.id);
     })
     .catch((error) => {
       logger.error(`exception occurred while users updateUser, id: ${input.id}`,

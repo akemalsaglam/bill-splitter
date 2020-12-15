@@ -6,21 +6,41 @@ const { usersErrorName } = require('./errors');
 const userService = {};
 
 const cryptography = require('../cryptography');
+const logger = require('../logger');
 
 userService.getAll = function getAll() {
   return userRepository.getAll();
 };
 
-userService.getById = function getById(args) {
-  return userRepository.getById(args.id);
+userService.getById = async function getById(args) {
+  const user = await userRepository.getById(args.id);
+  if (user === null) {
+    logger.warn(`user is not found for id: ${args.id}`);
+    return new Error(usersErrorName.userNotFound);
+  }
+  logger.info(`getting user by id: ${args.id}`);
+  return user;
 };
 
 userService.deleteById = function deleteById(args) {
   return userRepository.deleteById(args.id);
 };
 
-userService.updateUser = function updateUser(args) {
-  return userRepository.updateUser(args.input);
+async function isUserActive(id) {
+  const user = await userRepository.getById(id);
+  return (user.is_active === true);
+}
+
+async function isUserPassive(id) {
+  return !await isUserActive(id);
+}
+
+userService.updateUser = async function updateUser(args) {
+  if (await isUserPassive(args.input.id)) {
+    return new Error(usersErrorName.userIsPassive);
+  }
+  await userRepository.updateUser(args.input);
+  return userRepository.getById(args.input.id);
 };
 
 userService.activateUserById = function activateUserById(args) {
