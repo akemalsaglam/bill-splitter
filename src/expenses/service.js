@@ -2,12 +2,21 @@ const expenseRepository = require('./repository');
 
 const expenseService = {};
 
+const logger = require('../logger');
+const { expensesErrorName } = require('./errors');
+
 expenseService.getAll = function getAll() {
   return expenseRepository.getAll();
 };
 
-expenseService.getById = function getById(args) {
-  return expenseRepository.getById(args.id);
+expenseService.getById = async function getById(args) {
+  const expense = await expenseRepository.getById(args.id);
+  if (expense === null) {
+    logger.warn(`expense not found for id: ${args.id}`);
+    return new Error(expensesErrorName.expenseNotFound);
+  }
+  logger.info(`getting expense by id: ${args.id}`);
+  return expense;
 };
 
 expenseService.getExpenseByEventId = function getExpenseByEventId(args) {

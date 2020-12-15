@@ -1,15 +1,14 @@
 const postgreSqlDb = require('../postgreDb');
 
-const queries = {};
+const expenseRepository = {};
 
 const logger = require('../logger');
 const mainSqlQueries = require('../main-sql-queries');
 
 const tableName = 'expenses';
 const expensesSqlQueries = require('./sql-queries');
-const { expensesErrorName } = require('./errors');
 
-queries.getAll = function getAll() {
+expenseRepository.getAll = function getAll() {
   return postgreSqlDb.manyOrNone(mainSqlQueries.getAllQuery(tableName))
     .then((data) => {
       logger.info('getting all expenses.');
@@ -20,16 +19,9 @@ queries.getAll = function getAll() {
     );
 };
 
-queries.getById = function getById(id) {
+expenseRepository.getById = async function getById(id) {
   return postgreSqlDb.oneOrNone(mainSqlQueries.getByIdQuery(tableName), id)
-    .then((data) => {
-      if (data === null) {
-        logger.warn(`user is not found for id:${id}`);
-        return new Error(expensesErrorName.expenseNotFound);
-      }
-      logger.info(`getting expense by id: ${id}`);
-      return data;
-    })
+    .then((data) => data)
     .catch(
       (error) => logger.error(
         `exception occurred while expenses getById, id: ${id}`,
@@ -38,7 +30,7 @@ queries.getById = function getById(id) {
     );
 };
 
-queries.getExpenseByEventId = function getExpenseByEventId(eventId) {
+expenseRepository.getExpenseByEventId = function getExpenseByEventId(eventId) {
   return postgreSqlDb.manyOrNone(expensesSqlQueries.getExpenseByEventIdQuery,
     eventId)
     .then((data) => {
@@ -53,7 +45,7 @@ queries.getExpenseByEventId = function getExpenseByEventId(eventId) {
     );
 };
 
-queries.deleteExpenseById = function deleteExpenseById(id) {
+expenseRepository.deleteExpenseById = function deleteExpenseById(id) {
   return postgreSqlDb.none(mainSqlQueries.deleteByIdQuery(tableName), id)
     .then(() => {
       logger.info(`expense id: ${id} was deleted.`);
@@ -65,7 +57,7 @@ queries.deleteExpenseById = function deleteExpenseById(id) {
     });
 };
 
-queries.activateExpenseById = function activateExpenseById(id) {
+expenseRepository.activateExpenseById = function activateExpenseById(id) {
   return postgreSqlDb.none(mainSqlQueries.activateByIdQuery(tableName), id)
     .then(() => {
       logger.info(`expense id: ${id} was activated.`);
@@ -78,7 +70,7 @@ queries.activateExpenseById = function activateExpenseById(id) {
 };
 
 async function isExpenseActive(id) {
-  const expense = await queries.getById(id);
+  const expense = await expenseRepository.getById(id);
   return (expense.is_active === true);
 }
 
@@ -86,4 +78,4 @@ async function isExpensePassive(id) {
   return !await isExpenseActive(id);
 }
 
-module.exports = queries;
+module.exports = expenseRepository;

@@ -10,8 +10,9 @@ eventService.getById = function getById(args) {
   return eventRepository.getById(args.id);
 };
 
-eventService.updateEvent = function updateEvent(args) {
-  return eventRepository.updateEvent(args.id, args.eventInput);
+eventService.updateEvent = async function updateEvent(args) {
+  await eventRepository.updateEvent(args.id, args.eventInput);
+  return eventRepository.getById(args.id);
 };
 
 eventService.deleteEventById = function deleteEventById(args) {

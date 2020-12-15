@@ -5,9 +5,9 @@ const logger = require('../logger');
 const eventPhotosSqlQueries = require('./sql-queries');
 
 const tableName = 'event_photos';
-const queries = {};
+const eventPhotoRepository = {};
 
-queries.getPhotosByEventId = function getPhotosByEventId(eventId) {
+eventPhotoRepository.getPhotosByEventId = function getPhotosByEventId(eventId) {
   return postgreSqlDb.manyOrNone(
     eventPhotosSqlQueries.getPhotosByEventIdQuery, eventId,
   )
@@ -19,7 +19,7 @@ queries.getPhotosByEventId = function getPhotosByEventId(eventId) {
     );
 };
 
-queries.getPhotosById = function getPhotosById(id) {
+eventPhotoRepository.getPhotosById = function getPhotosById(id) {
   return postgreSqlDb.one(mainSqlQueries.getByIdQuery(tableName), id)
     .then((data) => data)
     .catch(
@@ -29,10 +29,10 @@ queries.getPhotosById = function getPhotosById(id) {
     );
 };
 
-queries.addEventPhoto = function addEventPhoto(input) {
+eventPhotoRepository.addEventPhoto = function addEventPhoto(input) {
   return postgreSqlDb.one(eventPhotosSqlQueries.addEventPhotoQuery,
     [input.url, input.event_id])
-    .then((data) => queries.getPhotosById(data.id))
+    .then((data) => eventPhotoRepository.getPhotosById(data.id))
     .catch(
       (error) => logger.error(
         'exception occurred while event-photos addEventPhoto', error,
@@ -40,4 +40,4 @@ queries.addEventPhoto = function addEventPhoto(input) {
     );
 };
 
-module.exports = queries;
+module.exports = eventPhotoRepository;

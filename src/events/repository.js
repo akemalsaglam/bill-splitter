@@ -3,10 +3,10 @@ const eventsSqlQueries = require('./sql-queries');
 const logger = require('../logger');
 const mainSqlQueries = require('../main-sql-queries');
 
-const queries = {};
+const eventRepository = {};
 const tableName = 'events';
 
-queries.getAll = function getAll() {
+eventRepository.getAll = function getAll() {
   return postgreSqlDb.manyOrNone(mainSqlQueries.getAllQuery(tableName))
     .then((data) => {
       logger.info('getting all events.');
@@ -17,7 +17,7 @@ queries.getAll = function getAll() {
     });
 };
 
-queries.getById = function getById(id) {
+eventRepository.getById = function getById(id) {
   return postgreSqlDb.oneOrNone(mainSqlQueries.getByIdQuery(tableName), id)
     .then((data) => {
       logger.info(`getting event by id: ${id}`);
@@ -28,12 +28,11 @@ queries.getById = function getById(id) {
     });
 };
 
-queries.updateEvent = function updateEvent(id, eventInput) {
+eventRepository.updateEvent = function updateEvent(id, eventInput) {
   return postgreSqlDb.none(eventsSqlQueries.updateEventQuery,
     [id, eventInput.name, eventInput.description])
     .then(() => {
       logger.info(`updating event by id: ${id}`);
-      return queries.getById(id);
     })
     .catch((error) => {
       logger.error(`exception occurred while events updateEvent, id: ${id}`,
@@ -41,7 +40,7 @@ queries.updateEvent = function updateEvent(id, eventInput) {
     });
 };
 
-queries.deleteEventById = function deleteEventById(id) {
+eventRepository.deleteEventById = function deleteEventById(id) {
   return postgreSqlDb.none(mainSqlQueries.deleteByIdQuery(tableName), id)
     .then(() => {
       logger.info(`deleting event by id: ${id}`);
@@ -50,10 +49,11 @@ queries.deleteEventById = function deleteEventById(id) {
     .catch((error) => {
       logger.error(`exception occurred while events deleteEventById, id: ${id}`,
         error);
+      return false;
     });
 };
 
-queries.activateEventById = function activateEventById(id) {
+eventRepository.activateEventById = function activateEventById(id) {
   return postgreSqlDb.none(mainSqlQueries.activateByIdQuery(tableName), id)
     .then(() => {
       logger.info(`activate event by id: ${id}`);
@@ -62,7 +62,8 @@ queries.activateEventById = function activateEventById(id) {
     .catch((error) => {
       logger.error(`exception occurred while events activateEventById, id: ${id}`,
         error);
+      return false;
     });
 };
 
-module.exports = queries;
+module.exports = eventRepository;

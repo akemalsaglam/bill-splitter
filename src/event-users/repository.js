@@ -1,20 +1,20 @@
 const { eventUsersErrorName } = require('./errors');
 const postgreSqlDb = require('../postgreDb');
 
-const queries = {};
+const eventUserRepository = {};
 const logger = require('../logger');
 const mainSqlQueries = require('../main-sql-queries');
 
 const tableName = 'event_users';
 const eventUsersSqlQueries = require('./sql-queries');
 
-queries.getUsersByEventId = function getUsersByEventId(eventId) {
+eventUserRepository.getUsersByEventId = function getUsersByEventId(eventId) {
   return postgreSqlDb.manyOrNone(
     eventUsersSqlQueries.getUsersByEventIdQuery, eventId,
   )
     .then((data) => {
       if (data === null) {
-        logger.warn(`event user is not found for id:${eventId}`);
+        logger.warn(`event user is not found for id: ${eventId}`);
         return new Error(eventUsersErrorName.userNotFound);
       }
       logger.info(`getting event users by event_id: ${eventId}`);
@@ -28,7 +28,7 @@ queries.getUsersByEventId = function getUsersByEventId(eventId) {
     });
 };
 
-queries.deleteUserById = function deleteUserById(id) {
+eventUserRepository.deleteUserById = function deleteUserById(id) {
   return postgreSqlDb.none(mainSqlQueries.deleteByIdQuery(tableName), id)
     .then(() => {
       logger.info(`deleting event user by id: ${id}`);
@@ -42,7 +42,7 @@ queries.deleteUserById = function deleteUserById(id) {
     });
 };
 
-queries.activateEventUserById = function activateEventUserById(id) {
+eventUserRepository.activateEventUserById = function activateEventUserById(id) {
   return postgreSqlDb.none(mainSqlQueries.activateByIdQuery(tableName), id)
     .then(() => {
       logger.info(`activate event-user by id: ${id}`);
@@ -56,4 +56,4 @@ queries.activateEventUserById = function activateEventUserById(id) {
     });
 };
 
-module.exports = queries;
+module.exports = eventUserRepository;
