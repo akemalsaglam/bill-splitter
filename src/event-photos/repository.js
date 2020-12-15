@@ -1,4 +1,3 @@
-const errors = require('./errors');
 const postgreSqlDb = require('../postgreDb');
 
 const mainSqlQueries = require('../main-sql-queries');
@@ -8,36 +7,37 @@ const eventPhotosSqlQueries = require('./sql-queries');
 const tableName = 'event_photos';
 const queries = {};
 
-queries.getPhotosByEventId = function (eventId) {
+queries.getPhotosByEventId = function getPhotosByEventId(eventId) {
   return postgreSqlDb.manyOrNone(
-      eventPhotosSqlQueries.getPhotosByEventIdQuery, eventId)
-  .then(data => {
-    return data;
-  })
-  .catch(
-      error => logger.error(
-          'exception occurred while event-photos getPhotosByEventId', error));
+    eventPhotosSqlQueries.getPhotosByEventIdQuery, eventId,
+  )
+    .then((data) => data)
+    .catch(
+      (error) => logger.error(
+        'exception occurred while event-photos getPhotosByEventId', error,
+      ),
+    );
 };
 
-queries.getPhotosById = function (id) {
+queries.getPhotosById = function getPhotosById(id) {
   return postgreSqlDb.one(mainSqlQueries.getByIdQuery(tableName), id)
-  .then(data => {
-    return data;
-  })
-  .catch(
-      error => logger.error(
-          'exception occurred while event-photos getPhotosById', error));
+    .then((data) => data)
+    .catch(
+      (error) => logger.error(
+        'exception occurred while event-photos getPhotosById', error,
+      ),
+    );
 };
 
-queries.addEventPhoto = function (input) {
+queries.addEventPhoto = function addEventPhoto(input) {
   return postgreSqlDb.one(eventPhotosSqlQueries.addEventPhotoQuery,
-      [input.url, input.event_id])
-  .then(data => {
-    return queries.getPhotosById(data.id);
-  })
-  .catch(
-      error => logger.error(
-          'exception occurred while event-photos addEventPhoto', error));
+    [input.url, input.event_id])
+    .then((data) => queries.getPhotosById(data.id))
+    .catch(
+      (error) => logger.error(
+        'exception occurred while event-photos addEventPhoto', error,
+      ),
+    );
 };
 
 module.exports = queries;

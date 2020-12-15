@@ -24,7 +24,7 @@ const Mutations = `
 
 const root = {
   getPhotosByEventId: eventPhotosService.getPhotosByEventId,
-  addEventPhoto: eventPhotosService.addEventPhoto
+  addEventPhoto: eventPhotosService.addEventPhoto,
 };
 
 module.exports.model = EventPhotos;

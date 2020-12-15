@@ -7,27 +7,27 @@ const userService = {};
 
 const cryptography = require('../cryptography');
 
-userService.getAll = function () {
+userService.getAll = function getAll() {
   return userRepository.getAll();
 };
 
-userService.getById = function (args) {
+userService.getById = function getById(args) {
   return userRepository.getById(args.id);
 };
 
-userService.deleteById = function (args) {
+userService.deleteById = function deleteById(args) {
   return userRepository.deleteById(args.id);
 };
 
-userService.updateUser = function (args) {
+userService.updateUser = function updateUser(args) {
   return userRepository.updateUser(args.input);
 };
 
-userService.activateUserById = function (args) {
+userService.activateUserById = function activateUserById(args) {
   return userRepository.activateUserById(args.id);
 };
 
-userService.register = async function (args) {
+userService.register = async function register(args) {
   const registerInput = args.input;
   const isMailAddressValid = emailValidator.validate(registerInput.email_address);
 
@@ -56,10 +56,10 @@ userService.register = async function (args) {
   registerInput.is_active = true;
 
   const userId = await userRepository.insertUser(registerInput);
-  return await userRepository.getById(userId);
+  return userRepository.getById(userId);
 };
 
-userService.login = async function (args) {
+userService.login = async function login(args) {
   const loginInput = args.input;
   const user = await userRepository.getByEmail(loginInput.email_address);
   if (user == null) {

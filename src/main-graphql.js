@@ -7,15 +7,9 @@ const expenseGraphql = require('./expenses/graphql-schema');
 const eventPhotosGraphql = require('./event-photos/graphql-schema');
 const eventUsersGraphql = require('./event-users/graphql-schema');
 
-const {errorType} = require('./errors');
+const { errorType } = require('./errors');
 
-const getErrorCode = errorName => {
-  return errorType[errorName]
-};
-
-const passiveUserError = {
-  message: "user is passive"
-};
+const getErrorCode = (errorName) => errorType[errorName];
 
 const schema = buildSchema(`
     type Query {
@@ -46,15 +40,15 @@ const root = {
   ...eventGraphql.root,
   ...expenseGraphql.root,
   ...eventPhotosGraphql.root,
-  ...eventUsersGraphql.root
+  ...eventUsersGraphql.root,
 };
 
 module.exports = expressGraphql.graphqlHTTP({
-  schema: schema,
+  schema,
   rootValue: root,
   graphiql: true,
   customFormatErrorFn: (err) => {
     const error = getErrorCode(err.message);
-    return ({message: error.message, statusCode: error.statusCode});
-  }
+    return ({ message: error.message, statusCode: error.statusCode });
+  },
 });

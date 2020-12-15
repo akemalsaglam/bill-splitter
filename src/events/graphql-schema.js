@@ -35,7 +35,7 @@ const root = {
   getAllEvents: eventService.getAll,
   deleteEventById: eventService.deleteEventById,
   updateEvent: eventService.updateEvent,
-  activateEventById: eventService.activateEventById
+  activateEventById: eventService.activateEventById,
 };
 
 module.exports.model = model;

@@ -1,5 +1,5 @@
 const queries = {};
-const {devConfig} = require('../../config');
+const { devConfig } = require('../../config');
 
 queries.getPhotosByEventIdQuery = `select * from ${devConfig.database.schemaName}.event_photos eu where eu.event_id=$1`;
 

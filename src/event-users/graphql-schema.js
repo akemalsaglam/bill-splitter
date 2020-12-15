@@ -21,7 +21,7 @@ deleteEventUserById(id: Int!): Boolean
 
 const root = {
   getUsersByEventId: eventUsersService.getUsersByEventId,
-  deleteEventUserById: eventUsersService.deleteUserById
+  deleteEventUserById: eventUsersService.deleteUserById,
 };
 
 module.exports.model = EventUser;

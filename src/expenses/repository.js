@@ -1,73 +1,80 @@
 const postgreSqlDb = require('../postgreDb');
+
 const queries = {};
 
 const logger = require('../logger');
 const mainSqlQueries = require('../main-sql-queries');
+
 const tableName = 'expenses';
 const expensesSqlQueries = require('./sql-queries');
-const {expensesErrorName} = require('./errors');
+const { expensesErrorName } = require('./errors');
 
-queries.getAll = function () {
+queries.getAll = function getAll() {
   return postgreSqlDb.manyOrNone(mainSqlQueries.getAllQuery(tableName))
-  .then(data => {
-    logger.info("getting all expenses.");
-    return data;
-  })
-  .catch(
-      error => logger.error('exception occurred while expenses getAll', error));
+    .then((data) => {
+      logger.info('getting all expenses.');
+      return data;
+    })
+    .catch(
+      (error) => logger.error('exception occurred while expenses getAll', error),
+    );
 };
 
-queries.getById = function (id) {
+queries.getById = function getById(id) {
   return postgreSqlDb.oneOrNone(mainSqlQueries.getByIdQuery(tableName), id)
-  .then(function (data) {
-    if (data === null) {
-      logger.warn("user is not found for id:" + id);
-      return new Error(expensesErrorName.expenseNotFound);
-    }
-    logger.info(`getting expense by id: ${id}`);
-    return data;
-  })
-  .catch(
-      error => logger.error(
-          `exception occurred while expenses getById, id: ${id}`,
-          error));
+    .then((data) => {
+      if (data === null) {
+        logger.warn(`user is not found for id:${id}`);
+        return new Error(expensesErrorName.expenseNotFound);
+      }
+      logger.info(`getting expense by id: ${id}`);
+      return data;
+    })
+    .catch(
+      (error) => logger.error(
+        `exception occurred while expenses getById, id: ${id}`,
+        error,
+      ),
+    );
 };
 
-queries.getExpenseByEventId = function (eventId) {
+queries.getExpenseByEventId = function getExpenseByEventId(eventId) {
   return postgreSqlDb.manyOrNone(expensesSqlQueries.getExpenseByEventIdQuery,
-      eventId)
-  .then(function (data) {
-    logger.info(`getting expenses by eventId: ${id}`);
-    return data;
-  })
-  .catch(
-      error => logger.error(
-          `exception occurred while expenses getExpenseByEventId, id: ${eventId}`,
-          error));
+    eventId)
+    .then((data) => {
+      logger.info(`getting expenses by eventId: ${eventId}`);
+      return data;
+    })
+    .catch(
+      (error) => logger.error(
+        `exception occurred while expenses getExpenseByEventId, id: ${eventId}`,
+        error,
+      ),
+    );
 };
 
-queries.deleteExpenseById = function (id) {
+queries.deleteExpenseById = function deleteExpenseById(id) {
   return postgreSqlDb.none(mainSqlQueries.deleteByIdQuery(tableName), id)
-  .then((data) => {
-    logger.info(`expense id: ${id} was deleted.`);
-    return true;
-  })
-  .catch(error => {
-    logger.error(`exception occurred while expense deleteById, id: ${id}`,
+    .then(() => {
+      logger.info(`expense id: ${id} was deleted.`);
+      return true;
+    })
+    .catch((error) => {
+      logger.error(`exception occurred while expense deleteById, id: ${id}`,
         error);
-  });
+    });
 };
 
-queries.activateExpenseById = function (id) {
+queries.activateExpenseById = function activateExpenseById(id) {
   return postgreSqlDb.none(mainSqlQueries.activateByIdQuery(tableName), id)
-  .then((data) => {
-    logger.info(`expense id: ${id} was activated.`);
-    return true;
-  })
-  .catch(error => {
-    logger.error(`exception occurred while expense activateUserById, id: ${id}`,
+    .then(() => {
+      logger.info(`expense id: ${id} was activated.`);
+      return true;
+    })
+    .catch((error) => {
+      logger.error(`exception occurred while expense activateUserById, id: ${id}`,
         error);
-  });
+    });
 };
 
 async function isExpenseActive(id) {

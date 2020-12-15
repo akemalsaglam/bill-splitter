@@ -27,7 +27,7 @@ const root = {
   getAllExpenses: expenseService.getAll,
   getExpenseByEventId: expenseService.getExpenseByEventId,
   deleteExpenseById: expenseService.deleteExpenseById,
-  activateExpenseById: expenseService.activateExpenseById
+  activateExpenseById: expenseService.activateExpenseById,
 };
 
 module.exports.model = Expense;
