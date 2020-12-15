@@ -1,25 +1,25 @@
 const expenseRepository = require('./repository');
 
-const service = {};
+const expenseService = {};
 
-service.getAll = function () {
+expenseService.getAll = function () {
   return expenseRepository.getAll();
 };
 
-service.getById = function (args) {
+expenseService.getById = function (args) {
   return expenseRepository.getById(args.id);
 };
 
-service.getExpenseByEventId = function (args) {
+expenseService.getExpenseByEventId = function (args) {
   return expenseRepository.getExpenseByEventId(args.eventId);
 };
 
-service.deleteExpenseById = function (args) {
+expenseService.deleteExpenseById = function (args) {
   return expenseRepository.deleteExpenseById(args.id);
 };
 
-service.activateExpenseById = function (args) {
+expenseService.activateExpenseById = function (args) {
   return expenseRepository.activateExpenseById(args.id);
 };
 
-module.exports = service;
+module.exports = expenseService;

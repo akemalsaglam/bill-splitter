@@ -1,13 +1,13 @@
 const queries = require('./repository');
 
-const service = {};
+const eventUserService = {};
 
-service.getUsersByEventId = function (args) {
+eventUserService.getUsersByEventId = function (args) {
     return queries.getUsersByEventId(args.eventId);
 };
 
-service.deleteUserById = function (args) {
+eventUserService.deleteUserById = function (args) {
     return queries.deleteUserById(args.id);
 };
 
-module.exports = service;
+module.exports = eventUserService;

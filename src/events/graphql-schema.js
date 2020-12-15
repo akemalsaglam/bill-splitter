@@ -33,8 +33,8 @@ const Mutations = `
 const root = {
   getEventById: eventService.getById,
   getAllEvents: eventService.getAll,
-  deleteEventById: eventService.deleteById,
-  updateEvent: eventService.deleteEventById,
+  deleteEventById: eventService.deleteEventById,
+  updateEvent: eventService.updateEvent,
   activateEventById: eventService.activateEventById
 };
 

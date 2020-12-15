@@ -1,13 +1,13 @@
 const queries = require('./repository');
 
-const service = {};
+const eventPhotoService = {};
 
-service.getPhotosByEventId = function (args) {
+eventPhotoService.getPhotosByEventId = function (args) {
     return queries.getPhotosByEventId(args.eventId);
 };
 
-service.addEventPhoto = function (args) {
+eventPhotoService.addEventPhoto = function (args) {
     return queries.addEventPhoto(args.input);
 };
 
-module.exports = service;
+module.exports = eventPhotoService;
