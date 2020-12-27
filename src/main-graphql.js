@@ -1,5 +1,5 @@
 const expressGraphql = require('express-graphql');
-const { buildSchema } = require('graphql');
+const { buildSchema, GraphQLError } = require('graphql');
 
 const userGraphql = require('./users/graphql-schema');
 const eventGraphql = require('./events/graphql-schema');
@@ -48,6 +48,9 @@ module.exports = expressGraphql.graphqlHTTP({
   rootValue: root,
   graphiql: true,
   customFormatErrorFn: (err) => {
+    if (err instanceof GraphQLError) {
+      return ({ message: err.message, statusCode: 500 });
+    }
     const error = getErrorCode(err.message);
     return ({ message: error.message, statusCode: error.statusCode });
   },
