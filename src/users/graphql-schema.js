@@ -16,12 +16,10 @@ const model = `
   },
  
   input UserInput {
-    id: Int
-    name: String
-    email: String
-    surname: String
+    id: Int!
+    name: String!
+    surname: String!
     profile_photo_link: String
-    is_active: Boolean
   },
   
   input RegisterInput {
